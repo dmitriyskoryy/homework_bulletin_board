@@ -31,7 +31,10 @@ class Adt(models.Model):
     rating = models.SmallIntegerField(default=0)
 
 
-
+#добавим ссылку на текущий объект. Для того, чтобы при создании объекта или переходе
+    #к его деталям не прописывать в каждом дженерике succes_url.
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с новостю
+        return f'/ads/{self.id}'
 
 class Respond(models.Model):
     responseAdt = models.ForeignKey(Adt, on_delete=models.CASCADE)

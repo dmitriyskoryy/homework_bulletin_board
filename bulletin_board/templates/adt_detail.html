@@ -1,0 +1,18 @@
+{% extends 'default.html' %}
+
+
+
+{% block adt_detail %}
+    <h2 align="center">{{ adt.title }}</h2>
+    <p class="p-detail">{{ adt.text }}</p>
+
+
+    <p>
+        Вы являетесь автором этого объявления. Вы можете
+        <a href="{% url 'adt_update' adt.id %}"><u> Изменить </u></a>или
+        <a href="{% url 'adt_delete' adt.id %}"><u> Удалить </u></a> его.
+        <br>
+    </p>
+
+
+{% endblock adt_detail %}
