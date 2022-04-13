@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.views import generic
 from .models import *
 from .forms import FormCreateAdt
@@ -23,6 +24,22 @@ class AdtDetailView(generic.DetailView):
     template_name = 'adt_detail.html'
     context_object_name = 'adt'
     queryset = Adt.objects.all()
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        id = self.kwargs.get('pk')
+        adt = Adt.objects.get(pk=id)
+
+
+        # получаем все отклики пользователей по объявлению
+
+        response = [r for r in Respond.objects.filter(responseAdt=adt)]
+        context['responses_set'] = response
+        return context
+
+
 
 
 
@@ -53,3 +70,22 @@ class AdtDeleteView(generic.DeleteView):
     template_name = 'adt_delete.html'
     queryset = Adt.objects.all()
     success_url = '/ads/'
+
+
+
+
+
+
+def user_response(request):
+    if request.method == "POST":
+        user = request.user
+        id_adt = request.POST['id_adt']
+        text_response = request.POST['text_response']
+
+        Respond.objects.create(responseUser=User.objects.get(username=user), responseAdt=Adt.objects.get(pk=id_adt), text=text_response)
+
+    return redirect(f'/ads/{id_adt}')
+
+
+
+

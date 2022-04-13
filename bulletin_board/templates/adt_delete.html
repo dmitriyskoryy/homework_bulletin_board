@@ -1,6 +1,12 @@
 {% extends 'default.html' %}
 
+{% block adt_delete %}
 
 <form method="POST">
     {% csrf_token %}
+    <p>
+        Объявление будет удалено.
+    </p>
     <input type="submit" value="подтвердить"></form>
+
+{% endblock adt_delete %}

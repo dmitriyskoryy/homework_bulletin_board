@@ -1,11 +1,33 @@
 {% extends 'default.html' %}
-
+{% load static %}
 
 
 {% block adt_detail %}
     <h2 align="center">{{ adt.title }}</h2>
     <p class="p-detail">{{ adt.text }}</p>
 
+    <img class="img-detail-response" src="{% static 'img/img_response.jpg' %}" alt="photo">
+    <br>
+
+    {% for resp in responses_set %}
+        {{resp.responseUser}}
+        {{resp.dateCreation}}
+        <label>{{resp.text}}</label><br>
+    {% endfor %}
+
+
+    <hr align="left" width=300px size="1" color="#313736" />
+    <p>
+        Вы можете оставить отклик на объявление:
+    </p>
+
+    <form action="/ads/user_response/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="id_adt" value={{adt.id}}>
+        <textarea name="text_response" cols=50 rows=10></textarea><br>
+
+        <button>Добавить отклик</button>
+    </form>
 
     <p>
         Вы являетесь автором этого объявления. Вы можете
@@ -16,3 +38,4 @@
 
 
 {% endblock adt_detail %}
+

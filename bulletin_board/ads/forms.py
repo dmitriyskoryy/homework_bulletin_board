@@ -11,12 +11,10 @@ class FormCreateAdt(ModelForm):
         self.fields['adtCategory'].empty_label = "Категория не выбрана"
 
 
-    # в класс мета, как обычно, надо написать модель, по которой будет строиться форма и нужные нам поля.
+    # в класс мета, надо написать модель, по которой будет строиться форма и нужные нам поля.
     class Meta:
         model = Adt
-
         fields = ['title', 'text', 'adtCategory',]
-
 
 
     #пользовательский валидатор
@@ -27,3 +25,20 @@ class FormCreateAdt(ModelForm):
 
         return title
 
+
+
+'''class FormCreateResponce(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Respond
+        fields = ['text', ]
+
+    # пользовательский валидатор
+    def clean_text(self):
+        text_responce = self.cleaned_data['text']
+        if len(text_responce) > 300:
+            raise ValidationError('Длина текста не более 300 символов!')
+
+        return text_responce'''
