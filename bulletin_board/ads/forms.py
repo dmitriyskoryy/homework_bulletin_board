@@ -1,20 +1,29 @@
 
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput, CharField
 from .models import *
 
+# from ckeditor.widgets import RichTextUploadingField
+
+from ckeditor_uploader.fields import RichTextUploadingField
+from django.contrib.auth.models import User
 
 class FormCreateAdt(ModelForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['adtCategory'].empty_label = "Категория не выбрана"
 
+    text = RichTextUploadingField(verbose_name='Текст:')
 
     # в класс мета, надо написать модель, по которой будет строиться форма и нужные нам поля.
     class Meta:
         model = Adt
-        fields = ['title', 'text', 'adtCategory',]
+        fields = ['adtCategory', 'title', 'text', ]
+
+        widgets = {
+            'title': TextInput(attrs={'size': '70'}),
+            # 'text': Textarea(attrs={'cols': 60, 'rows': 10}),
+        }
 
 
     #пользовательский валидатор
@@ -26,19 +35,3 @@ class FormCreateAdt(ModelForm):
         return title
 
 
-
-'''class FormCreateResponce(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    class Meta:
-        model = Respond
-        fields = ['text', ]
-
-    # пользовательский валидатор
-    def clean_text(self):
-        text_responce = self.cleaned_data['text']
-        if len(text_responce) > 300:
-            raise ValidationError('Длина текста не более 300 символов!')
-
-        return text_responce'''

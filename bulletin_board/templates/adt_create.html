@@ -1,18 +1,48 @@
 {% extends 'default.html' %}
 
 
+{% load static %}
+
+
+
 {% block create_adt %}
+
 <h3>Создать объявление</h3>
 
 
-<form method="POST">
+<!--Для передачи файлов фото необходимо добавить атрибут enctype="multipart/form-data"-->
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    {{ form.as_p.errors }}
+
+
+
+
+    {% for f in form %}
+
+        <div>
+            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>
+        </div>
+        <div class="form-error">
+            {{ f }}
+            {{ f.errors }}
+        </div>
+
+
+    {% endfor %}
+
+    <br>
     <input type="submit" value="Добавить объявление">
 </form>
 
+{% comment "Comment" %}
+
+{{ form.as_p }}
+{{ form.as_p.errors }}
 
 
+{% endcomment %}
+
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 {% endblock create_adt %}
