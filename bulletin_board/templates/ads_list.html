@@ -9,7 +9,7 @@
 
         <a class="style_ads ads__title" href="{% url 'adt_detail' adt.id %}">{{ adt.title }}</a>
 
-        <a class="style_ads ads__text" href="{% url 'adt_detail' adt.id %}"><p>{{ adt.text|safe|truncatewords:20 }}</p></a>
+        <a class="style_ads ads__text" href="{% url 'adt_detail' adt.id %}"><p>{{ adt.text|striptags|truncatewords:20 }}</p></a>
 
         <div class="adt-info">
             <a href="#"><span class="adt-info__link">Дата</span></a>

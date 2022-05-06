@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm, TextInput, CharField
 from .models import *
 
-# from ckeditor.widgets import RichTextUploadingField
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
@@ -13,7 +13,8 @@ class FormCreateAdt(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['adtCategory'].empty_label = "Категория не выбрана"
 
-    text = RichTextUploadingField(verbose_name='Текст:')
+    # text = RichTextUploadingField(verbose_name='Текст:')
+    text = CharField(widget=CKEditorUploadingWidget(), label='Текст')
 
     # в класс мета, надо написать модель, по которой будет строиться форма и нужные нам поля.
     class Meta:
@@ -35,3 +36,4 @@ class FormCreateAdt(ModelForm):
         return title
 
 
+# removetags:"b span"|
