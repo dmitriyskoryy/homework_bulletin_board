@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'ads',
+    'accounts',
 
     'ckeditor',
     'ckeditor_uploader',
@@ -167,15 +168,29 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ACCOUNT_FORMS = {'signup': 'accounts.models.BasicSignupForm'}
 
 
+#Добавление в группы при регистрации
+#Чтобы allauth распознал нашу форму как ту, что должна выполняться
+# вместо формы по умолчанию, необходимо добавить строчку в файл настроек
+# проекта settings.py:
+ACCOUNT_FORMS = {'signup': 'accounts.models.BasicSignupForm'}
+
+
+#нужен для пренаправления если пользователь не авторизован
+# важный момент, в пути первый слешь говорит о том что путь пойдет от приложения
+# т.е. например адрес будет 127.0.0.1:8000/accounts/login/
 LOGIN_URL = '/accounts/login/'
 
 #нужен для пренаправления когда пользователь вошел
 LOGIN_REDIRECT_URL = '/ads/'
 #нужен для пренаправления когда пользователь вышел
 ACCOUNT_LOGOUT_REDIRECT_URL = "/ads/"
+
+
+
+
+
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -186,6 +201,38 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            ['Undo', 'Redo',
+             '-', 'Bold', 'Italic', 'Underline',
+             '-', 'Link', 'Unlink', 'Anchor',
+             '-', 'Format',
+             '-', 'Maximize',
+             '-', 'Table',
+             '-', 'Image',
+             '-', 'Youtube',
+             '-', 'Source',
+             '-', 'NumberedList', 'BulletedList'
+            ],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
+             '-', 'Font', 'FontSize', 'TextColor',
+             '-', 'Outdent', 'Indent',
+             '-', 'HorizontalRule',
+             '-', 'Blockquote'
+            ]
+        ],
+        'extraPlugins': ','.join([
+            'youtube',
+        ]),
+        'height': 500,
+        'width': '100%',
+        'toolbarCanCollapse': False,
+        'forcePasteAsPlainText': True
+    }
+}
+
+'''
 CKEDITOR_CONFIGS = {
     'default': {
         'skin': 'moono',
@@ -226,7 +273,7 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
         # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
         # 'height': 291,
-        # 'width': '100%',
+        'width': '100%',
         # 'filebrowserWindowHeight': 725,
         # 'filebrowserWindowWidth': 940,
         # 'toolbarCanCollapse': True,
@@ -251,3 +298,4 @@ CKEDITOR_CONFIGS = {
         ]),
     }
 }
+'''

@@ -3,40 +3,43 @@
 {% block personal_area %}
 
 
-<form method="GET">
-    {% csrf_token %}
 
-    <label>Ваши бъявления:</label><br>
-    <select type="search" name="q" required="">
-        {% for t in title %}
-            <option value={{t}}>{{t}}</option>
-        {% endfor %}
-    </select>
-
-    <input type="submit" value="Показать отклики"><br>
-
-
-</form>
-<label>Отклики на объявление:</label><br>
-{% for resp in responses %}
-        {{ resp.responseUser }}, {{ resp.dateCreation }} <br>
-{{ resp.text }}<br>
-
-    <form action="/ads/personal_area/accept_response/" method="POST">
+{% if title %}
+    <form method="GET">
         {% csrf_token %}
-        <button name="id_accept">Принять</button>
-        <button name="id_delete">Удалить</button>
 
-        <hr align="left" width=130px size="1" color="#313736" />
+        <label>Ваши бъявления:</label><br>
+        <select type="search" name="q" required="">
+            {% for t in title %}
+                <option value={{t}}>{{t}}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Показать отклики"><br>
+
+
     </form>
+    <label>Отклики на объявление:</label><br>
+    {% for resp in responses %}
+            {{ resp.responseUser }}, {{ resp.dateCreation }} <br>
+            {{ resp.text }}<br>
 
-{% endfor %}
+        <form action="/ads/personal_area/accept_response/" method="POST">
+            {% csrf_token %}
+            <button name="id_accept">Принять</button>
+            <button name="id_delete">Удалить</button>
+
+            <hr align="left" width=130px size="1" color="#313736" />
+        </form>
+    {% endfor %}
+{% elif not title %}
+    <label>У вас нет объявлений.</label><br>
+{% endif %}
 
 
 {% comment "Comment" %}
 
 {{ filter.form.as_p }}
-
 
 {% endcomment %}
 

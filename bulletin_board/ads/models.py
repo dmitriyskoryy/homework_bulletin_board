@@ -26,8 +26,8 @@ class Adt(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Author')
     adtCategory = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категории')
     dateCreation = models.DateTimeField(auto_now_add=True, verbose_name='Date')
-    title = models.CharField(max_length=128, verbose_name='Заголовок')
-    text = RichTextUploadingField(blank=True, verbose_name='Текст')
+    title = models.CharField(max_length=128, verbose_name='Заголовок объявления')
+    text = RichTextUploadingField(blank=True, verbose_name='Контент')
     # photo = models.ImageField(upload_to='photo/%Y/%m/%d/',  verbose_name='Фото')
     rating = models.SmallIntegerField(default=0)
 
@@ -48,10 +48,6 @@ class Respond(models.Model):
 
     def __str__(self):
         return f'{self.responseUser}'
-
-
-class Photo(models.Model):
-    photo = models.ImageField(upload_to='photo/%Y/%m/%d/', height_field=100, width_field=100,  verbose_name='Фото')
 
 
 class Subscriber(models.Model):

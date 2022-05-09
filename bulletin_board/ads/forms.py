@@ -1,6 +1,6 @@
 
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, TextInput, CharField
+from django.forms import ModelForm, TextInput, CharField, Textarea
 from .models import *
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
@@ -14,7 +14,7 @@ class FormCreateAdt(ModelForm):
         self.fields['adtCategory'].empty_label = "Категория не выбрана"
 
     # text = RichTextUploadingField(verbose_name='Текст:')
-    text = CharField(widget=CKEditorUploadingWidget(), label='Текст')
+    text = CharField(widget=CKEditorUploadingWidget(), label='Контент')
 
     # в класс мета, надо написать модель, по которой будет строиться форма и нужные нам поля.
     class Meta:
@@ -22,8 +22,8 @@ class FormCreateAdt(ModelForm):
         fields = ['adtCategory', 'title', 'text', ]
 
         widgets = {
-            'title': TextInput(attrs={'size': '70'}),
-            # 'text': Textarea(attrs={'cols': 60, 'rows': 10}),
+            'title': TextInput(attrs={'size': '100%'}),
+            # 'text': Textarea(attrs={'cols': 30, 'rows': 10}),
         }
 
 

@@ -1,10 +1,22 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
 from django.shortcuts import redirect
 from django.views import generic
+
+from loguru import logger
+
 from .models import *
 from .forms import FormCreateAdt
-from .filters import RespondFilter
+
 
 from django.contrib.auth.models import User
+
+logger.debug("Hello, debug")
+logger.info("Hello, info")
+logger.error("Hello, error")
+
+
 
 class AdtList(generic.ListView):
     model = Adt
@@ -16,38 +28,50 @@ class AdtList(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # user = self.request.user
-        # context['is_not_authors'] = not user.groups.filter(name='authors').exists()
-        context['is_not_authors'] = ''
+        user = self.request.user
+        context['is_not_group_authors'] = not user.groups.filter(name='Authors').exists()
         return context
+
 
 
 class AdtDetailView(generic.DetailView):
     template_name = 'adt_detail.html'
     context_object_name = 'adt'
-    queryset = Adt.objects.all()
+    queryset = Adt.objects.all() # узнать про это!!!! Надо ли это здесь
 
+    # добавить как-то чтобы после входа автоматов перенаправляло на туже страницу
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id = self.kwargs.get('pk')
         adt = Adt.objects.get(pk=id)
-
+        user = self.request.user
 
         # получаем все отклики пользователей по объявлению
-
         response = [r for r in Respond.objects.filter(responseAdt=adt)]
         context['responses_set'] = response
+
+        # проверка может ли пользователь оставлять отклики
+        context['is_not_group_common'] = not user.groups.filter(name='Common').exists()
+
+        # проверка является ли пользователь автором текущего объявления
+        try:
+            context['is_author_adt'] = Adt.objects.filter(pk=id,
+                                            author=Author.objects.get(authorUser=user))
+        except:
+            context['is_author_adt'] = None
+
         return context
 
 
 
 
 
-class AdtCreateView(generic.CreateView):
+class AdtCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     model = Adt
     template_name = 'adt_create.html'
     form_class = FormCreateAdt
+    permission_required = ('adt.add_adt',)
 
     def form_valid(self, FormCreateAdt):
         self.object = FormCreateAdt.save(commit=False)
@@ -56,10 +80,11 @@ class AdtCreateView(generic.CreateView):
 
 
 
-class AdtUpdateView(generic.UpdateView):
+class AdtUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Adt
     template_name = 'adt_create.html'
     form_class = FormCreateAdt
+    permission_required = ('adt.change_adt',)
 
     # метод get_object  исп вместо queryset, чтобы получить информацию об объекте который нужно редактировать
     def get_object(self, **kwargs):
@@ -67,16 +92,17 @@ class AdtUpdateView(generic.UpdateView):
         return Adt.objects.get(pk=id)
 
 
-class AdtDeleteView(generic.DeleteView):
+class AdtDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     template_name = 'adt_delete.html'
     queryset = Adt.objects.all()
+    permission_required = ('adt.delete_adt',)
     success_url = '/ads/'
 
 
 
 
 
-class Personal_Area(generic.ListView):
+class Personal_Area(LoginRequiredMixin, generic.ListView):
     model = Respond
     template_name = 'personal_area.html'
     context_object_name = 'responses'
@@ -95,36 +121,6 @@ class Personal_Area(generic.ListView):
         context['title'] = [s.title for s in Adt.objects.filter(author=Author.objects.get(authorUser=user))]
         context['q'] = self.request.GET.get("q")
         return context
-
-
-
-    # def get_filter(self):
-    #     return RespondFilter(self.request.GET, queryset=super().get_queryset())
-    #
-    # def get_queryset(self):
-    #     return self.get_filter().qs
-    #
-    # def get_context_data(self, *args, **kwargs):
-    #     user = self.request.user
-    #     context = super().get_context_data(**kwargs)
-    #     # captions_adt = [s.responseAdt.title for s in Respond.objects.filter(responseUser=user)]
-    #     return {
-    #         **super().get_context_data(*args, **kwargs),
-    #         "filter": self.get_filter(),
-    #
-    #         # "title": captions_adt,
-    #     }
-
-
-
-
-
-
-# def user_list(request):
-#     f = F(request.GET, queryset=User.objects.all())
-#     return render(request, 'user_t.html', {'filter': f})
-
-
 
 
 

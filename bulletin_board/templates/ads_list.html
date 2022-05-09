@@ -24,17 +24,17 @@
     {% endfor %}
 
 
-{% if not is_not_authors %}
+{% if not is_not_group_authors %}
     <p>
         Добро пожаловать. Вы можете
         <a href="{% url 'adt_create' %}"><u>Добавить объявление.</u></a><br>
         <br>
     </p>
-{% elif is_not_authors %}
+{% elif is_not_group_authors %}
     <p>
         К сожалению, вы не можете добавлять объяления.
-        <a href="{% url 'adt_create' %}"><u>Войдите</u></a> или
-        <a href="{% url 'adt_create' %}"><u>Зарегистрируйтесь.</u></a><br>
+        <a href="/accounts/login"><u>Войдите</u></a> или
+        <a href="/accounts/signup"><u>Зарегистрируйтесь.</u></a><br>
         <br>
     </p>
 

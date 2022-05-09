@@ -6,8 +6,7 @@
     <h2 align="center">{{ adt.title }}</h2>
     <p class="p-detail">{{ adt.text|safe }}</p>
 
-    <img class="img-detail-response" src="{% static 'img/img_response.jpg' %}" alt="photo">
-    <br>
+    <hr align="left" width=100% size="1" color="#313736" />
 
     {% for resp in responses_set %}
         {{resp.responseUser}}
@@ -16,7 +15,9 @@
     {% endfor %}
 
 
-    <hr align="left" width=300px size="1" color="#313736" />
+    <hr align="left" width=100% size="1" color="#313736" />
+
+{% if not is_not_group_common and not is_author_adt %}
     <p>
         Вы можете оставить отклик на объявление:
     </p>
@@ -30,13 +31,33 @@
         <button>Добавить отклик</button>
     </form>
 
+{% elif is_not_group_common %}
+    <p>
+        Чтобы оставить отклик на объявление
+        <a href="/accounts/login"><u>Войдите</u></a> или
+        <a href="/accounts/signup"><u>Зарегистрируйтесь.</u></a><br>
+        <br>
+    </p>
+{% endif %}
+
+{% if is_author_adt %}
     <p>
         Вы являетесь автором этого объявления. Вы можете
         <a href="{% url 'adt_update' adt.id %}"><u> Изменить </u></a>или
         <a href="{% url 'adt_delete' adt.id %}"><u> Удалить </u></a> его.
         <br>
     </p>
+{% endif %}
+
+
 
 
 {% endblock adt_detail %}
 
+
+{% comment "Comment" %}
+
+  <img class="img-detail-response" src="{% static 'img/img_response.jpg' %}" alt="photo">
+
+
+{% endcomment %}
