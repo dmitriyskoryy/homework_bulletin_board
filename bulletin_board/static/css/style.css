@@ -73,6 +73,10 @@ a {
     font-family: 'laptev', Arial, sans-serif;
     font-size: 24px;
 }
+.menu-items__username {
+    color: #FF9F40;
+}
+
 .menu-items_red:hover {
     color: #FF9F40;
 }

@@ -9,7 +9,7 @@ from loguru import logger
 from .models import *
 from .forms import FormCreateAdt
 
-
+import allauth
 from django.contrib.auth.models import User
 
 logger.debug("Hello, debug")
@@ -38,6 +38,8 @@ class AdtDetailView(generic.DetailView):
     template_name = 'adt_detail.html'
     context_object_name = 'adt'
     queryset = Adt.objects.all() # узнать про это!!!! Надо ли это здесь
+
+    success_url = '/ads/<int:pk>'
 
     # добавить как-то чтобы после входа автоматов перенаправляло на туже страницу
 

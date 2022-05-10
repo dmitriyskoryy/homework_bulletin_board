@@ -76,9 +76,9 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -174,7 +174,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Чтобы allauth распознал нашу форму как ту, что должна выполняться
 # вместо формы по умолчанию, необходимо добавить строчку в файл настроек
 # проекта settings.py:
-ACCOUNT_FORMS = {'signup': 'accounts.models.BasicSignupForm'}
+ACCOUNT_FORMS = {'signup': 'accounts.models.BasicSignupForm',
+                 # 'login': 'accounts.models.BasicLoginForm',
+                 }
 
 
 #нужен для пренаправления если пользователь не авторизован
@@ -191,15 +193,22 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/ads/"
 
 
 
-
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-# ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # с подтверждение по почте
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # с подтверждение по почте
+# ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CKEDITOR_CONFIGS = {
     'default': {

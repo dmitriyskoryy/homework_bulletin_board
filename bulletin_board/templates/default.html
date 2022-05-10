@@ -28,18 +28,23 @@
 
                 </ul>
                 <ul class="menu-items">
+                    {% if user.is_authenticated %}
                     <li class="menu-items__item">
                         <a class="menu-items__link menu-items_red" href="/ads/personal_area/">Личный кабинет</a>
                     </li>
                     <li class="menu-items__item">
-                        <a class="menu-items__link menu-items_red" href="/accounts/login">Вход</a>
+                        <a class="menu-items__link menu-items_red" href="/accounts/logout">Выход {{ user.username }}</a>
                     </li>
+
+
+                    {% else %}
                     <li class="menu-items__item">
-                        <a class="menu-items__link menu-items_red" href="/accounts/logout">Выход</a>
+                        <a class="menu-items__link menu-items_red" href="/accounts/login">Вход</a>
                     </li>
                     <li class="menu-items__item">
                         <a class="menu-items__link menu-items_red" href="/accounts/signup">Регистрация</a>
                     </li>
+                    {% endif %}
                 </ul>
 		</nav>
 
