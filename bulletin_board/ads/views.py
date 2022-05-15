@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
@@ -9,7 +10,7 @@ from loguru import logger
 from .models import *
 from .forms import FormCreateAdt
 
-import allauth
+
 from django.contrib.auth.models import User
 
 logger.debug("Hello, debug")
@@ -148,3 +149,16 @@ def accept_response(request):
         print('=========================   Удалить', request.POST['id_delete'])
 
     return redirect(f'/ads/personal_area/')
+
+
+
+
+# def usual_login_view(request):
+#     username = request.POST['username']
+#     password = request.POST['password']
+#     user = authenticate(request, username=username, password=password)
+#     if user is not None:
+#         print('===================== is not None')
+#     else:
+#         print('===================== is None')
+

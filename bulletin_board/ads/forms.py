@@ -1,6 +1,6 @@
 
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm, TextInput, CharField, Textarea
+from django.forms import ModelForm, TextInput, CharField
 from .models import *
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget

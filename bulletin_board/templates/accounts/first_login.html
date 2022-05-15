@@ -1,0 +1,26 @@
+{% extends 'default.html' %}
+
+
+{% block title %} Подтверждение аккаунта {% endblock title %}
+
+{% block first_login %}
+<h3>Необходимо активировать аккаунт. <br> Введине имя, пароль и одноразовый код, который был отправлен вам на почту.</h3>
+
+
+<form action="/accounts/register_code/" method="POST">
+    {% csrf_token %}
+
+    {% for f in form %}
+        <div>
+            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+        </div>
+        <div class="form-error">
+            {{ f }}
+            {{ f.errors }}
+        </div>
+    {% endfor %}
+
+    <br>
+    <input type="submit" value="Активировать аккаунт">
+</form>
+{% endblock first_login %}

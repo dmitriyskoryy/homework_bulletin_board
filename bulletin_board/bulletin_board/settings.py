@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django.contrib.sites',
 
     'allauth',
     'allauth.account',
@@ -175,7 +176,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # вместо формы по умолчанию, необходимо добавить строчку в файл настроек
 # проекта settings.py:
 ACCOUNT_FORMS = {'signup': 'accounts.models.BasicSignupForm',
-                 # 'login': 'accounts.models.BasicLoginForm',
+                 'login': 'accounts.models.BasicLoginForm',
                  }
 
 
@@ -189,7 +190,7 @@ LOGIN_REDIRECT_URL = '/ads/'
 #нужен для пренаправления когда пользователь вышел
 ACCOUNT_LOGOUT_REDIRECT_URL = "/ads/"
 
-
+ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/first_login/"
 
 
 
@@ -197,8 +198,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # с подтверждение по почте
-# ACCOUNT_EMAIL_VERIFICATION = 'none'
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # с подтверждение по почте
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 

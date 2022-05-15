@@ -9,13 +9,9 @@
 
 <h3>Создать объявление</h3>
 
-
 <!--Для передачи файлов фото необходимо добавить атрибут enctype="multipart/form-data"-->
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-
-
-
 
     {% for f in form %}
 
