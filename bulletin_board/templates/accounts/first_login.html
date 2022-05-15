@@ -4,8 +4,7 @@
 {% block title %} Подтверждение аккаунта {% endblock title %}
 
 {% block first_login %}
-<h3>Необходимо активировать аккаунт. <br> Введине имя, пароль и одноразовый код, который был отправлен вам на почту.</h3>
-
+<h3>Необходимо активировать аккаунт. <br> Введине одноразовый код, который был отправлен вам на почту {{ user.email }}</h3>
 
 <form action="/accounts/register_code/" method="POST">
     {% csrf_token %}
@@ -21,6 +20,7 @@
     {% endfor %}
 
     <br>
+    <input type="hidden" name="email" value={{user.email}}>
     <input type="submit" value="Активировать аккаунт">
 </form>
 {% endblock first_login %}

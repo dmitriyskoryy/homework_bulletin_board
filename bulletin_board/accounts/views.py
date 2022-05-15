@@ -1,7 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.views import generic
-from .forms import FormFirstLogin
+from .forms import FormOneTimeCode
+
+from ads.models import OneTimeCode
+
 from .models import BasicSignupForm
 
 import allauth.account.views
@@ -10,29 +14,43 @@ from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 
 
+
+
 class FirstLoginView(generic.CreateView):
     template_name = 'accounts/first_login.html'
-    form_class = FormFirstLogin
-    # success_url = '/accounts/login'
+    form_class = FormOneTimeCode
 
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     email = self.kwargs.get('user')
+    #     context['email'] = email
+    #     return context
 
 
 
 def register_code(request):
+    """Функция проверки есть ли в модели OneTimeCode пользователь с одноразовым кодом
+     и совпадает ли этот код с тем, который был передан в request. Если есть, то данная запись
+     удаляется из модели OneTimeCode, тем самым подтверждается регистрация"""
     if request.method == "POST":
-        print('=========================   Принять', request.POST['login'])
-        print('=========================   Принять', request.POST['password'])
-        print('=========================   Принять', request.POST['code'])
+        code_request = request.POST['code']
+        email = request.POST['email']
+        try:
+            user = User.objects.get(email=email)
+            code_user = OneTimeCode.objects.get(codeUser=user)
+        except:
+            return redirect(f'/accounts/first_login/')
 
-    return redirect(f'/ads/')
+        if code_user is not None:
+            if code_user.oneTimeCode == code_request:
+                code_user.delete()
+                return redirect(f'/ads/')
+            else:
+                return redirect(f'/accounts/first_login/')
 
 
-# class BaseRegisterView(CreateView):
-#     model = User
-#     form_class = BasicSignupForm
-#     success_url = '/ads/'
 
-#
 #
 # @receiver(user_logged_in, dispatch_uid="some.unique.string.id.for.allauth.user_logged_in")
 # def user_logged_in(request, user, **kwargs):

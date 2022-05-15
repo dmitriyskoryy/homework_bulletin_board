@@ -14,7 +14,6 @@
     {% csrf_token %}
 
     {% for f in form %}
-
         <div>
             <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>
         </div>

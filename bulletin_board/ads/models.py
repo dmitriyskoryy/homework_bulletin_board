@@ -57,3 +57,8 @@ class Subscriber(models.Model):
     def __str__(self):
         return f'{self.subscribersUser} {self.adtCategory}'
 
+
+
+class OneTimeCode(models.Model):
+    codeUser = models.OneToOneField(User, on_delete=models.CASCADE)
+    oneTimeCode = models.CharField(max_length=128)

@@ -74,7 +74,7 @@ class AdtCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateV
     model = Adt
     template_name = 'adt_create.html'
     form_class = FormCreateAdt
-    permission_required = ('adt.add_adt',)
+    permission_required = ('ads.add_adt',)
 
     def form_valid(self, FormCreateAdt):
         self.object = FormCreateAdt.save(commit=False)
@@ -100,7 +100,6 @@ class AdtDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteV
     queryset = Adt.objects.all()
     permission_required = ('adt.delete_adt',)
     success_url = '/ads/'
-
 
 
 
@@ -136,7 +135,6 @@ def user_response(request):
         text_response = request.POST['text_response']
 
         Respond.objects.create(responseUser=User.objects.get(username=user), responseAdt=Adt.objects.get(pk=id_adt), text=text_response)
-
     return redirect(f'/ads/{id_adt}')
 
 

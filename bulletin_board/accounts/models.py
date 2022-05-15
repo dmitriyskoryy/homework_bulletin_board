@@ -10,90 +10,113 @@ from django.forms import CharField
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 
+
 from django.contrib.auth.models import User
+
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-from django.core.mail import send_mail
+
+from ads.models import OneTimeCode
 
 
 class BasicSignupForm(SignupForm):
 
     def save(self, request):
         user = super(BasicSignupForm, self).save(request)
+
         common_group = Group.objects.get(name='Common')
         common_group.user_set.add(user)
         authors_group = Group.objects.get(name='Authors')
         authors_group.user_set.add(user)
-        # user.is_active = 0
+
+        self.code_create(user)
         return user
 
 
 
+    def code_create(self, user):
+        """Метод для создания одноразового кода и добавления его в модель OneTimeCode"""
+        code = ''.join(random.choice(string.ascii_letters) for x in range(5))
+        OneTimeCode.objects.create(oneTimeCode=code, codeUser=user)
+
+
 
 class BasicLoginForm(LoginForm):
-    code = CharField(label="Одноразовый код", required=True)
+
     def __init__(self, *args, **kwargs):
         super(BasicLoginForm, self).__init__(*args, **kwargs)
 
-#
-    def user_authenticate(self, *args, **kwargs):
+    def user_authenticate(self):
         login = self.request.POST['login']
         password = self.request.POST['password']
-        code = self.request.POST['code']
+
         user = authenticate(self.request, username=login, password=password)
-        if user is not None and code == '1':
-            print(password, '  ===================== ', login)
-            return True
+        if user is not None:
+            user_code = get_one_time_code(user)
         else:
-            print('  ===================== user  None ')
             return False
+
+        if user_code is None:
+            return True
 
 
     def login(self, *args, **kwargs):
-        if self.user_authenticate(self, *args, **kwargs):
+        if self.user_authenticate():
             return super(BasicLoginForm, self).login(*args, **kwargs)
         else:
-            return redirect('/accounts/first_login/')
+            return redirect(f"/accounts/first_login/")
 
 
 
+def get_one_time_code(user):
+    """Функция для получения одноразового кода пользователя из модели OneTimeCode"""
+    try:
+        codeUser = OneTimeCode.objects.get(codeUser__username=user)
+    except:
+        return None
 
+    if codeUser:
+        return codeUser.oneTimeCode
+    else:
+        return None
 
 
 
 @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
 def user_signed_up_first_login(request, user, **kwargs):
+    """Функция-сигнал для отслеживания регистрации нового пользователя,
+    и отправки ему одноразового кода для подтверждения регистрации"""
     try:
-        for_user_email = User.objects.get(username=user)
-
+        user = User.objects.get(username=user)
     except:
         raise ObjectDoesNotExist
 
-    code = ''.join(random.choice(string.ascii_letters) for x in range(5))
-    message = f"Ваш код для подтверждения аккаунта: {code}"
+    user_code = get_one_time_code(user)
+
+    message = f"Ваш код для подтверждения аккаунта: {user_code}"
 
     html_content = render_to_string(
         'mail_send_code.html',
         {
             'code': message,
-            'email': for_user_email.email,
+            'email': user.email,
         }
     )
 
     msg = EmailMultiAlternatives(
-        subject=f'Здравствуйте! Вы зарегистировались на сайте MMORPG. ',
+        subject=f'Здравствуйте, {user}! Вы зарегистировались на сайте MMORPG. ',
         body=f'Это автоматическая рассылка.',
         from_email=f'dnetdima@gmail.com',
-        to=[for_user_email.email, ],
+        to=[user.email, ],
     )
     msg.attach_alternative(html_content, "text/html")
 
     try:
-        # print('send')
+        #print(user_code, "   ", user)
         msg.send()
     except:
         raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
