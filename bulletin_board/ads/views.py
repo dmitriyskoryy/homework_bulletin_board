@@ -109,7 +109,7 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
     template_name = 'personal_area.html'
     context_object_name = 'responses'
     ordering = ['-id']
-    success_url = '/ads/personal_area'
+
 
 
     def get_queryset(self):
@@ -122,6 +122,10 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(*args, **kwargs)
         context['title'] = [s.title for s in Adt.objects.filter(author=Author.objects.get(authorUser=user))]
         context['q'] = self.request.GET.get("q")
+        q = self.request.GET.get("q")
+
+        if self.request.GET.get("id_accept") == "Принять":
+            print('====================== ' )
         return context
 
 
@@ -129,6 +133,7 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
 
 
 def user_response(request):
+    """Функция добавления отклика на объявление"""
     if request.method == "POST":
         user = request.user
         id_adt = request.POST['id_adt']
@@ -138,15 +143,6 @@ def user_response(request):
     return redirect(f'/ads/{id_adt}')
 
 
-
-def accept_response(request):
-    if request.method == "POST":
-
-        print('=========================   Принять', request.POST['id_accept'])
-
-        print('=========================   Удалить', request.POST['id_delete'])
-
-    return redirect(f'/ads/personal_area/')
 
 
 

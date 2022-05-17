@@ -30,8 +30,8 @@ class FormCreateAdt(ModelForm):
     #пользовательский валидатор
     def clean_title(self):
         title = self.cleaned_data['title']
-        if len(title) > 255:
-            raise ValidationError('Длина заголовка не более 255 символов!')
+        if len(title) > 128:
+            raise ValidationError('Длина заголовка не более 128 символов!')
 
         return title
 

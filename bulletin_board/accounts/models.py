@@ -20,7 +20,7 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
-from ads.models import OneTimeCode
+from ads.models import OneTimeCode, Author
 
 
 class BasicSignupForm(SignupForm):
@@ -33,6 +33,7 @@ class BasicSignupForm(SignupForm):
         authors_group = Group.objects.get(name='Authors')
         authors_group.user_set.add(user)
 
+        Author.objects.create(authorUser=user)
         self.code_create(user)
         return user
 
@@ -116,8 +117,8 @@ def user_signed_up_first_login(request, user, **kwargs):
     msg.attach_alternative(html_content, "text/html")
 
     try:
-        #print(user_code, "   ", user)
-        msg.send()
+        print(user_code, "   ", user)
+        # msg.send()
     except:
         raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
 

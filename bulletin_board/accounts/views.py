@@ -15,17 +15,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 
-
 class FirstLoginView(generic.CreateView):
     template_name = 'accounts/first_login.html'
     form_class = FormOneTimeCode
 
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     email = self.kwargs.get('user')
-    #     context['email'] = email
-    #     return context
 
 
 
@@ -36,16 +29,21 @@ def register_code(request):
     if request.method == "POST":
         code_request = request.POST['code']
         email = request.POST['email']
+        code_user = None
         try:
-            user = User.objects.get(email=email)
-            code_user = OneTimeCode.objects.get(codeUser=user)
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
+            # elif User.objects.filter(username=email).exists():
+            #     user = User.objects.get(username=email)
+                code_user = OneTimeCode.objects.get(codeUser=user)
         except:
             return redirect(f'/accounts/first_login/')
+
 
         if code_user is not None:
             if code_user.oneTimeCode == code_request:
                 code_user.delete()
-                return redirect(f'/ads/')
+                return redirect(f'/accounts/login/')
             else:
                 return redirect(f'/accounts/first_login/')
 

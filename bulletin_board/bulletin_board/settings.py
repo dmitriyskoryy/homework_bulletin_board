@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'accounts',
-    'ads',
+    # 'ads',
+    'ads.apps.AdsConfig',
 
     'ckeditor',
     'ckeditor_uploader',
@@ -190,7 +191,8 @@ LOGIN_REDIRECT_URL = '/ads/'
 ACCOUNT_LOGOUT_REDIRECT_URL = "/ads/"
 
 ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/first_login/"
-
+# ACCOUNT_LOGOUT_ON_GET = True
+# ACCOUNT_SIGNUP_REDIRECT_URL = "/accounts/logout/"
 
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -204,8 +206,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'dnetdima'
+EMAIL_HOST_PASSWORD = 'fd(lk4J6Sr*l3'
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

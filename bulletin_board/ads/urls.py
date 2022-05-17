@@ -12,5 +12,5 @@ urlpatterns = [
     path('personal_area/', Personal_Area.as_view(), name='personal_area'),
 
     path('user_response/', user_response, name='user_response'),
-    path('personal_area/accept_response/', accept_response),
+
 ]

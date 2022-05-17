@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class FormOneTimeCode(ModelForm):
 
-    # login = CharField(label='Имя пользователя:')
+    email = CharField(label='Адрес электронной почты:')
     # password = PasswordField(label="Пароль:", autocomplete="current-password")
     code = CharField(label='Одноразовый код:')
 
@@ -13,7 +13,7 @@ class FormOneTimeCode(ModelForm):
         fields = []
 
     widgets = {
-        # 'login': TextInput(attrs={'size': '80'}),
+        'email': TextInput(attrs={'size': '80'}),
         # 'password': TextInput(attrs={'size': '80'}),
         'code': TextInput(attrs={'size': '80'}),
     }

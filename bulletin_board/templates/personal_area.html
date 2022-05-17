@@ -10,28 +10,40 @@
 
         <label>Ваши бъявления:</label><br>
         <select type="search" name="q" required="">
+            <option disabled="disabled" selected="selected" value="">--- Выберите объявление ---</option>
             {% for t in title %}
-                <option value={{t}}>{{t}}</option>
+                {% comment "Comment" %}
+                Здесь в q возвращается выбранный ранее элемент.
+                Если текс элемента совпадает с текущим, то делаем его selected
+                {% endcomment %}
+                {% if t == q %}
+                    <option selected name="id_t">{{t}}</option>
+                {% else %}
+                    <option name="id_t">{{t}}</option>
+                {% endif %}
             {% endfor %}
         </select>
 
-        <input type="submit" value="Показать отклики"><br>
+        <input type="submit" value="Показать отклики">
+        <br><br>
 
-    </form>
-
-    <label>Отклики на объявление:</label><br>
-    {% for resp in responses %}
+        <label>Отклики на объявление:</label>
+        <br><br>
+        {% for resp in responses %}
             {{ resp.responseUser }}, {{ resp.dateCreation }} <br>
             {{ resp.text }}<br>
 
-        <form action="/ads/personal_area/accept_response/" method="POST">
-            {% csrf_token %}
-            <button name="id_accept">Принять</button>
-            <button name="id_delete">Удалить</button>
+            <input type="hidden" name="id_responses" value={{responses.id}}>
+            <input type="hidden" name="id_resp" value={{resp.id}}>
+            <input type="hidden" name="id_t" value={{t.id}}>
+            <button name="id_accept" value="Принять">Принять</button>
+            <button name="id_accept" value="Удалить">Удалить</button>
 
             <hr align="left" width=130px size="1" color="#313736" />
-        </form>
-    {% endfor %}
+        {% endfor %}
+    </form>
+
+
 {% elif not title %}
     <label>У вас нет объявлений.</label><br>
 {% endif %}
@@ -39,7 +51,8 @@
 
 {% comment "Comment" %}
 
-{{ filter.form.as_p }}
+
+
 
 {% endcomment %}
 
