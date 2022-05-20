@@ -7,17 +7,15 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
+
 # # в декоратор передаётся первым аргументом сигнал, на который будет реагировать эта функция, и в отправители надо передать также модель
 @receiver(post_save, sender=Respond)
 def notify_users_response(sender, instance, **kwargs):
-
+    """Сигнал для отслеживания добавления отклика на объявление и отправки письма"""
     respond = Respond.objects.get(pk=instance.id)
-    # categoryes = [s.name for s in adt.postCategory.all()]
-
     authorAdt = respond.responseAdt
     user = User.objects.get(username=authorAdt.author)
     email_author_adt = user.email
-
 
 
     message = f"Здравствуйте, {user}! Ваше объявление получило отклик от пользователя {respond.responseUser}"
@@ -28,7 +26,6 @@ def notify_users_response(sender, instance, **kwargs):
             'message': message,
         }
     )
-
     msg = EmailMultiAlternatives(
         subject=f'Ваше объявление на сайте MOPRG получило отклик!',
         body=f'Это автоматическая рассылка.',
@@ -38,8 +35,44 @@ def notify_users_response(sender, instance, **kwargs):
     msg.attach_alternative(html_content, "text/html")
 
     try:
-        #print("user     ", user.email)
-        msg.send()
+        print("user     ", user.email)
+       # msg.send()
     except:
         raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
+
+
+
+
+@receiver(post_save, sender=Adt)
+def notify_new_adt(sender, instance, **kwargs):
+    """Сигнал для отслеживания добавления объявления и отправки письма"""
+
+    adt = Adt.objects.get(pk=instance.id)
+
+
+    for user in User.objects.all():
+        message = f"Спешите прочитать новое объявление сайте МMOPRG:"
+
+        html_content = render_to_string(
+            'mail_send_new_adt.html',
+            {
+                'adt': adt,
+                'message': message,
+                'email': user.email,
+            }
+        )
+
+        msg = EmailMultiAlternatives(
+            subject=f'На сайте МMOPRG новое объявление',
+            body=f'Это автоматическая рассылка.',
+            from_email=f'dnetdima@gmail.com',
+            to=[user.email, ],
+        )
+        msg.attach_alternative(html_content, "text/html")
+
+        try:
+            #print("user     ", user.email)
+            msg.send()
+        except:
+            raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
 

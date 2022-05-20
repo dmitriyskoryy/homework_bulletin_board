@@ -12,9 +12,8 @@
         <a class="style_ads ads__text" href="{% url 'adt_detail' adt.id %}"><p>{{ adt.text|striptags|truncatewords:20 }}</p></a>
 
         <div class="adt-info">
-            <a href="#"><span class="adt-info__link">Дата</span></a>
-            <a href="#"><span class="adt-info__link">Автор</span></a>
-            <a href="#"><span class="adt-info__link">Отклики</span></a>
+            <a href="#"><span class="adt-info__link">Дата:{{adt.dateCreation|date:"d-m-Y"}}</span></a>
+            <a href="#"><span class="adt-info__link">{{adt.author}}</span></a>
         </div>
 
         <hr align="left" width=130px size="1" color="#313736" />

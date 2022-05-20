@@ -1,3 +1,5 @@
+from smtplib import SMTPDataError
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -12,6 +14,9 @@ from .forms import FormCreateAdt
 
 
 from django.contrib.auth.models import User
+
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 logger.debug("Hello, debug")
 logger.info("Hello, info")
@@ -35,10 +40,11 @@ class AdtList(generic.ListView):
 
 
 
+
 class AdtDetailView(generic.DetailView):
     template_name = 'adt_detail.html'
     context_object_name = 'adt'
-    queryset = Adt.objects.all() # узнать про это!!!! Надо ли это здесь
+    queryset = Adt.objects.all()
 
     success_url = '/ads/<int:pk>'
 
@@ -95,6 +101,8 @@ class AdtUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateV
         return Adt.objects.get(pk=id)
 
 
+
+
 class AdtDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     template_name = 'adt_delete.html'
     queryset = Adt.objects.all()
@@ -110,25 +118,82 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
     context_object_name = 'responses'
     ordering = ['-id']
 
-
-
     def get_queryset(self):
         if self.request.GET.get("q") is not None:
             return Respond.objects.filter(responseAdt__title__icontains=self.request.GET.get("q"))
-
 
     def get_context_data(self, *args, **kwargs):
         user = self.request.user
         context = super().get_context_data(*args, **kwargs)
         context['title'] = [s.title for s in Adt.objects.filter(author=Author.objects.get(authorUser=user))]
         context['q'] = self.request.GET.get("q")
-        q = self.request.GET.get("q")
 
-        if self.request.GET.get("id_accept") == "Принять":
-            print('====================== ' )
+        if self.request.GET.get("resp_accept"):
+            resp_id = self.request.GET.get("resp_accept")
+            accept_response(resp_id)
+
+        if self.request.GET.get("resp_delete"):
+            resp_id = self.request.GET.get("resp_delete")
+            delete_response(resp_id)
+
         return context
 
 
+
+def delete_response(resp_id):
+    """Функция удаления отклика через личный кабинет"""
+    try:
+        response = Respond.objects.get(id=resp_id)
+        if response:
+            response.delete()
+    except:
+        pass
+
+
+def accept_response(resp_id):
+    """Функция принятия отклика в личном кабинете"""
+    try:
+        response = Respond.objects.get(id=resp_id)
+        if response:
+            response.acceptResponse = True
+            response.save()
+
+            send_message_on_response(response)
+    except:
+        pass
+
+
+def send_message_on_response(response):
+    # user = User.objects.get(username=response.responseUser)
+    userResp = response.responseUser
+    email = userResp.email
+
+    userAdt = response.responseAdt
+    userAdt = User.objects.get(username=userAdt.author)
+
+
+    message = f"Здравствуйте, {userResp}! Пользователь {userAdt.username} принял ваш отклик."
+
+    html_content = render_to_string(
+        'mail_send_response.html',
+        {
+            'message': message,
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject=f'Ваше отклик принят пользователем {userAdt.username}',
+        body=f'Это автоматическая рассылка.',
+        from_email=f'dnetdima@gmail.com',
+        to=[email, ],
+    )
+    msg.attach_alternative(html_content, "text/html")
+
+    try:
+        #print("user     ", userAdt.username,     email)
+        msg.send()
+    except:
+        raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
 
 
 

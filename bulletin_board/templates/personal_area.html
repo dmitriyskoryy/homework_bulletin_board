@@ -33,11 +33,10 @@
             {{ resp.responseUser }}, {{ resp.dateCreation }} <br>
             {{ resp.text }}<br>
 
-            <input type="hidden" name="id_responses" value={{responses.id}}>
-            <input type="hidden" name="id_resp" value={{resp.id}}>
-            <input type="hidden" name="id_t" value={{t.id}}>
-            <button name="id_accept" value="Принять">Принять</button>
-            <button name="id_accept" value="Удалить">Удалить</button>
+            {% if not resp.acceptResponse %}
+                <button name="resp_accept" value={{resp.id}}>Принять</button>
+            {% endif %}
+            <button name="resp_delete" value={{resp.id}}>Удалить</button>
 
             <hr align="left" width=130px size="1" color="#313736" />
         {% endfor %}
@@ -52,7 +51,9 @@
 {% comment "Comment" %}
 
 
-
+  <input type="hidden" name="id_responses" value={{responses.id}}>
+            <input type="hidden" name="id_resp" value={{resp.id}}>
+            <input type="hidden" name="id_t" value={{t.id}}>
 
 {% endcomment %}
 
