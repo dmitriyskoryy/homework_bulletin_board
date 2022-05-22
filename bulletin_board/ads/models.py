@@ -1,9 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.models import User
-
-from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
+
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -13,13 +11,11 @@ class Author(models.Model):
         return f'{self.authorUser.username}'
 
 
-
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
         return f'{self.name}'
-
 
 
 class Adt(models.Model):
@@ -31,10 +27,9 @@ class Adt(models.Model):
     # photo = models.ImageField(upload_to='photo/%Y/%m/%d/',  verbose_name='Фото')
     rating = models.SmallIntegerField(default=0)
 
-
-#добавим ссылку на текущий объект. Для того, чтобы при создании объекта или переходе
+    #добав ссылку на текущий объект. Для того, чтобы при создании объекта или переходе
     #к его деталям не прописывать в каждом дженерике succes_url.
-    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с новостю
+    def get_absolute_url(self):
         return f'/ads/{self.id}'
 
 
@@ -48,15 +43,6 @@ class Respond(models.Model):
 
     def __str__(self):
         return f'{self.responseUser}'
-
-
-class Subscriber(models.Model):
-    subscribersUser = models.ForeignKey(User, on_delete=models.CASCADE)
-    adtCategory = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.subscribersUser} {self.adtCategory}'
-
 
 
 class OneTimeCode(models.Model):

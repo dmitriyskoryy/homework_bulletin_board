@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'accounts',
-    # 'ads',
-    'ads.apps.AdsConfig',
+    'ads',
+    # 'accounts.apps.AccountsConfig'
+    # 'ads.apps.AdsConfig',
 
     'ckeditor',
     'ckeditor_uploader',

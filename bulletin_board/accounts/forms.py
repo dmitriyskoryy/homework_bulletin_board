@@ -14,6 +14,5 @@ class FormOneTimeCode(ModelForm):
 
     widgets = {
         'email': TextInput(attrs={'size': '80'}),
-        # 'password': TextInput(attrs={'size': '80'}),
         'code': TextInput(attrs={'size': '80'}),
     }
