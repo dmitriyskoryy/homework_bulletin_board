@@ -1,6 +1,4 @@
-from smtplib import SMTPDataError
-
-from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
@@ -15,8 +13,8 @@ from .forms import FormCreateAdt
 
 from django.contrib.auth.models import User
 
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
+
+from bulletin_board.utils import send_message_on_email
 
 logger.debug("Hello, debug")
 logger.info("Hello, info")
@@ -146,8 +144,10 @@ def delete_response(resp_id):
         response = Respond.objects.get(id=resp_id)
         if response:
             response.delete()
-    except:
-        pass
+    except ObjectDoesNotExist as e:
+        logger.add('logs.log', level='ERROR')
+        print(e)
+        return None
 
 
 def accept_response(resp_id):
@@ -157,43 +157,29 @@ def accept_response(resp_id):
         if response:
             response.acceptResponse = True
             response.save()
-
             send_message_on_response(response)
-    except:
-        pass
+    except ObjectDoesNotExist as e:
+        print(e)
+        return None
 
 
 def send_message_on_response(response):
-    # user = User.objects.get(username=response.responseUser)
+    """Функция отправки на почту уведомления пользователю, если его отклик
+    был принят"""
     userResp = response.responseUser
     email = userResp.email
 
     userAdt = response.responseAdt
-    userAdt = User.objects.get(username=userAdt.author)
-
+    try:
+        userAdt = User.objects.get(username=userAdt.author)
+    except ObjectDoesNotExist as e:
+        print(e)
+        return None
 
     message = f"Здравствуйте, {userResp}! Пользователь {userAdt.username} принял ваш отклик."
-
-    html_content = render_to_string(
-        'mail_send_response.html',
-        {
-            'message': message,
-        }
-    )
-
-    msg = EmailMultiAlternatives(
-        subject=f'Ваше отклик принят пользователем {userAdt.username}',
-        body=f'Это автоматическая рассылка.',
-        from_email=f'dnetdima@gmail.com',
-        to=[email, ],
-    )
-    msg.attach_alternative(html_content, "text/html")
-
-    try:
-        #print("user     ", userAdt.username,     email)
-        msg.send()
-    except:
-        raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
+    subject = f'Ваше отклик принят пользователем {userAdt.username}'
+    template = 'mail_send_response.html'
+    send_message_on_email(message, subject, template, email)
 
 
 
@@ -208,16 +194,4 @@ def user_response(request):
     return redirect(f'/ads/{id_adt}')
 
 
-
-
-
-
-# def usual_login_view(request):
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#         print('===================== is not None')
-#     else:
-#         print('===================== is None')
 

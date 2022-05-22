@@ -35,9 +35,10 @@ def notify_new_adt(sender, instance, **kwargs):
     template = 'mail_send_new_adt.html'
 
     for user in User.objects.all():
-        email = user.email
-        message = f"Новое объявление на сайте МMOPRG:"
-        subject = f'На сайте МMOPRG новое объявление',
-        send_message_on_email(message, subject, template, email, adt)
+        if str(adt.author) != str(user.username): #проверка чтобы письмо о добавлении нового объявления не отправлялось автору этого объявления
+            email = user.email
+            message = f'Новое объявление на сайте МMOPRG:'
+            subject = f'На сайте МMOPRG новое объявление'
+            send_message_on_email(message, subject, template, email, adt)
 
 

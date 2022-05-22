@@ -6,18 +6,20 @@ from django.core.mail import EmailMultiAlternatives
 from smtplib import SMTPDataError
 from django.core.exceptions import ObjectDoesNotExist
 
+from loguru import logger
+
 from ads.models import OneTimeCode
 
 
-
-def send_message_on_email(**kwargs):
+def send_message_on_email(message, subject, template, email=None, adt=None):
     """Функция отправки сообщения на почту"""
 
-    message = kwargs['message']
-    subject = kwargs['subject']
-    template = kwargs['template']
-    email = kwargs['email']
-    adt = kwargs['adt']
+    # message = kwargs['message']
+    # subject = kwargs['subject']
+    # template = kwargs['template']
+    # email = kwargs['email']
+    # adt = kwargs['adt']
+    # adt = 'sdf'
 
     html_content = render_to_string(
         f'{template}',
@@ -37,9 +39,10 @@ def send_message_on_email(**kwargs):
     msg.attach_alternative(html_content, "text/html")
 
     try:
-        print("send message ok")
-        # msg.send()
+        #print("send message ok")
+        msg.send()
     except:
+        logger.add('logs.log', level='ERROR')
         raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
 
 
