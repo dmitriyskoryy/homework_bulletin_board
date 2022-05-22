@@ -20,7 +20,7 @@ logger.debug("Hello, debug")
 logger.info("Hello, info")
 logger.error("Hello, error")
 
-
+# logger.add("error.log", format="{time} {level} {message}", level="ERROR")
 
 class AdtList(generic.ListView):
     model = Adt
@@ -141,12 +141,12 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
 def delete_response(resp_id):
     """Функция удаления отклика через личный кабинет"""
     try:
-        response = Respond.objects.get(id=resp_id)
+        # response = Respond.objects.get(id=resp_id)
+        response = Respond.objects.get(id=342234234)
         if response:
             response.delete()
     except ObjectDoesNotExist as e:
-        logger.add('logs.log', level='ERROR')
-        print(e)
+        logger.error(e)
         return None
 
 
@@ -154,12 +154,13 @@ def accept_response(resp_id):
     """Функция принятия отклика в личном кабинете"""
     try:
         response = Respond.objects.get(id=resp_id)
+
         if response:
             response.acceptResponse = True
             response.save()
             send_message_on_response(response)
     except ObjectDoesNotExist as e:
-        print(e)
+        logger.error(e)
         return None
 
 
@@ -173,11 +174,11 @@ def send_message_on_response(response):
     try:
         userAdt = User.objects.get(username=userAdt.author)
     except ObjectDoesNotExist as e:
-        print(e)
+        logger.error(e)
         return None
 
     message = f"Здравствуйте, {userResp}! Пользователь {userAdt.username} принял ваш отклик."
-    subject = f'Ваше отклик принят пользователем {userAdt.username}'
+    subject = f'Ваш отклик принят пользователем {userAdt.username}'
     template = 'mail_send_response.html'
     send_message_on_email(message, subject, template, email)
 

@@ -16,7 +16,7 @@ def user_signed_up_first_login(request, user, **kwargs):
     try:
         user = User.objects.get(username=user)
     except ObjectDoesNotExist as e:
-        logger.add('logs.log', level='ERROR')
+        logger.error(e)
         return None
 
     user_code = get_onetime_code(user)

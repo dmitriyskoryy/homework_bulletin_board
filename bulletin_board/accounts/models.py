@@ -10,7 +10,6 @@ from ads.models import Author
 from bulletin_board.utils import get_onetime_code, onetime_code_create
 
 
-
 class BasicSignupForm(SignupForm):
 
     def save(self, request):

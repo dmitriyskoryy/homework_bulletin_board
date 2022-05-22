@@ -20,10 +20,13 @@ def notify_users_response(sender, instance, **kwargs):
     user = User.objects.get(username=authorAdt.author)
     email = user.email
 
-    message = f"Здравствуйте, {user}! Ваше объявление получило отклик от пользователя {respond.responseUser}"
-    subject = f'Ваше объявление на сайте MOPRG получило отклик!'
-    template = 'mail_send_response.html'
-    send_message_on_email(message, subject, template, email)
+    #проверка нужна чтобы письмо от получении отклика не отлылалось
+    #при принятии отклика, т.к.в этом случае тоже происходит событие post_save
+    if not respond.acceptResponse:
+        message = f"Здравствуйте, {user}! Ваше объявление получило отклик от пользователя {respond.responseUser}"
+        subject = f'Ваше объявление на сайте MOPRG получило отклик!'
+        template = 'mail_send_response.html'
+        send_message_on_email(message, subject, template, email)
 
 
 

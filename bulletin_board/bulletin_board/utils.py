@@ -10,16 +10,10 @@ from loguru import logger
 
 from ads.models import OneTimeCode
 
-
+@logger.catch()
 def send_message_on_email(message, subject, template, email=None, adt=None):
     """Функция отправки сообщения на почту"""
 
-    # message = kwargs['message']
-    # subject = kwargs['subject']
-    # template = kwargs['template']
-    # email = kwargs['email']
-    # adt = kwargs['adt']
-    # adt = 'sdf'
 
     html_content = render_to_string(
         f'{template}',
@@ -42,7 +36,6 @@ def send_message_on_email(message, subject, template, email=None, adt=None):
         #print("send message ok")
         msg.send()
     except:
-        logger.add('logs.log', level='ERROR')
         raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
 
 
@@ -60,7 +53,7 @@ def get_onetime_code(user):
     try:
         codeUser = OneTimeCode.objects.get(codeUser__username=user)
     except ObjectDoesNotExist as e:
-        print(e)
+        logger.error(e)
         return None
 
     if codeUser:

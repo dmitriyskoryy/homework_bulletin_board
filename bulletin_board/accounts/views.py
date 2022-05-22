@@ -8,7 +8,7 @@ from ads.models import OneTimeCode
 
 from django.core.exceptions import ObjectDoesNotExist
 
-
+from loguru import logger
 
 class FirstLoginView(generic.CreateView):
     template_name = 'accounts/first_login.html'
@@ -29,7 +29,8 @@ def register_code(request):
             if User.objects.filter(email=email).exists():
                 user = User.objects.get(email=email)
                 code_user = OneTimeCode.objects.get(codeUser=user)
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist as e:
+            logger.error(e)
             return redirect(f'/accounts/first_login/')
 
 
