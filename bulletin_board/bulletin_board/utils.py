@@ -17,10 +17,12 @@ def send_message_on_email(**kwargs):
     subject = kwargs['subject']
     template = kwargs['template']
     email = kwargs['email']
+    adt = kwargs['adt']
 
     html_content = render_to_string(
         f'{template}',
         {
+            'adt': adt,
             'message': message,
             'email': email,
         }
