@@ -42,6 +42,6 @@ def notify_new_adt(sender, instance, **kwargs):
             email = user.email
             message = f'Новое объявление на сайте МMOPRG:'
             subject = f'На сайте МMOPRG новое объявление'
-            send_message_on_email(message, subject, template, email, adt)
+            send_message_on_email(message, subject, template, email, adt=adt)
 
 

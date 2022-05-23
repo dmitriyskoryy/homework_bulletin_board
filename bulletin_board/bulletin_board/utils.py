@@ -11,9 +11,13 @@ from loguru import logger
 from ads.models import OneTimeCode
 
 @logger.catch()
-def send_message_on_email(message, subject, template, email=None, adt=None):
+# def send_message_on_email(message, subject, template, email=None, adt=None, code=None):
+def send_message_on_email(message, subject, template, email, **kwargs):
     """Функция отправки сообщения на почту"""
 
+
+    adt = kwargs.get('adt')
+    code = kwargs.get('code')
 
     html_content = render_to_string(
         f'{template}',
@@ -21,6 +25,7 @@ def send_message_on_email(message, subject, template, email=None, adt=None):
             'adt': adt,
             'message': message,
             'email': email,
+            'code': code,
         }
     )
 

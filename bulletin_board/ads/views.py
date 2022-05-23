@@ -91,7 +91,7 @@ class AdtUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateV
     model = Adt
     template_name = 'adt_create.html'
     form_class = FormCreateAdt
-    permission_required = ('adt.change_adt',)
+    permission_required = ('ads.change_adt',)
 
     # метод get_object  исп вместо queryset, чтобы получить информацию об объекте который нужно редактировать
     def get_object(self, **kwargs):
@@ -104,7 +104,7 @@ class AdtUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateV
 class AdtDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     template_name = 'adt_delete.html'
     queryset = Adt.objects.all()
-    permission_required = ('adt.delete_adt',)
+    permission_required = ('ads.delete_adt',)
     success_url = '/ads/'
 
 

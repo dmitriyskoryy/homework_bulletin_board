@@ -19,10 +19,10 @@ def user_signed_up_first_login(request, user, **kwargs):
         logger.error(e)
         return None
 
-    user_code = get_onetime_code(user)
+    code = get_onetime_code(user)
     email = user.email
-    message = f"Ваш код для подтверждения аккаунта: {user_code}"
+    message = f"Ваш код для подтверждения аккаунта:"
     subject = f'Здравствуйте, {user}! Вы зарегистировались на сайте MMORPG.'
     template = 'mail_send_code.html'
-    send_message_on_email(message, subject, template, email)
-
+    # send_message_on_email(message, subject, template, email, code)
+    send_message_on_email(message, subject, template, email, code=code)

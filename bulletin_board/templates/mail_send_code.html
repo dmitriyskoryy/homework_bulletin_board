@@ -1,11 +1,32 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-    <h2>{{ message }}</h2>
+    <h3>{{ message }}</h3>
+    <div class="background-onetimecode">
+    	<div class="background-onetimecode__h">
+    		<h2 ><font color="red">{{ code }}</font></h2>
+        </div>
+    </div>
 
+    <style>
+        .background-onetimecode {
+            background-color: #f7f5f5;
+            width: 150px;
+            border-radius: 5px;
+            margin: auto;
+        }
+        .background-onetimecode__h {
+            text-align: center;
+            width: 100%;
+            margin: auto;
+        }
+    </style>
 </body>
 </html>
