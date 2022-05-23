@@ -15,7 +15,7 @@ admin.site.register(OneTimeCode)
 class AdtAdminForm(ModelForm):
     text = CharField(widget=CKEditorWidget())
     class Meta:
-        model = Adt  # Тут нужно указать название можеди в которой мы будем использовать CKEditor
+        model = Adt  # Тут нужно указать название модели в которой мы будем использовать CKEditor
         fields = '__all__'
 
 

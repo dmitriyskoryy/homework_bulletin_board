@@ -33,10 +33,10 @@ def send_message_on_email(message, subject, template, email=None, adt=None):
     msg.attach_alternative(html_content, "text/html")
 
     try:
-        #print("send message ok")
         msg.send()
-    except:
-        raise SMTPDataError(554, 'Сообщение отклонено по подозрению в спаме!')
+        #print(message)
+    except SMTPDataError as e:
+        logger.error(e)
 
 
 

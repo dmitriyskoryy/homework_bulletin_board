@@ -4,7 +4,7 @@
 
 
 {% block all_ads %}
-
+{% if not is_onetime_code %}
    {% for adt in ads_list %}
 
         <a class="style_ads ads__title" href="{% url 'adt_detail' adt.id %}">{{ adt.title }}</a>
@@ -23,49 +23,51 @@
     {% endfor %}
 
 
-{% if not is_not_group_authors %}
-    <p>
-        Добро пожаловать. Вы можете
-        <a href="{% url 'adt_create' %}"><u>Добавить объявление.</u></a><br>
-        <br>
-    </p>
-{% elif is_not_group_authors %}
-    <p>
-        К сожалению, вы не можете добавлять объяления.
-        <a href="/accounts/login"><u>Войдите</u></a> или
-        <a href="/accounts/signup"><u>Зарегистрируйтесь.</u></a><br>
-        <br>
-    </p>
+    {% if not is_not_group_authors %}
+        <p>
+            Добро пожаловать. Вы можете
+            <a href="{% url 'adt_create' %}"><u>Добавить объявление.</u></a><br>
+            <br>
+        </p>
+    {% elif is_not_group_authors %}
+        <p>
+            К сожалению, вы не можете добавлять объяления.
+            <a href="/accounts/login"><u>Войдите</u></a> или
+            <a href="/accounts/signup"><u>Зарегистрируйтесь.</u></a><br>
+            <br>
+        </p>
 
-{% endif %}
-
-<!-- Проверяем что поддерживается постраничный вывод -->
-{% if is_paginated %}
-    <h3>
-    <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
-    {% if page_obj.has_previous %}
-       <a href="?page=1">Первая</a>
-       <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
     {% endif %}
 
-    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a>{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}">{{ num }}</a>
+    <!-- Проверяем что поддерживается постраничный вывод -->
+    {% if is_paginated %}
+        <h3>
+        <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+        {% if page_obj.has_previous %}
+           <a href="?page=1">Первая</a>
+           <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
         {% endif %}
-    {% endfor %}
 
-    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">>>></a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+        <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a>{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">>>></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+        {% endif %}
+        </h3>
     {% endif %}
-    </h3>
+
+{% else %}
+    <h3>Необходимо подтвердить регистрацию на сайте MMORPG. Пожалуйста, перейдите по <a href="/accounts/first_login/"><u>ссылке</u></a></h3>
 {% endif %}
-
-
 
 
 {% endblock all_ads %}

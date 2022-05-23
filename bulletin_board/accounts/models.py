@@ -11,6 +11,7 @@ from bulletin_board.utils import get_onetime_code, onetime_code_create
 
 
 class BasicSignupForm(SignupForm):
+    # success_url = '/accounts/first_login/'
 
     def save(self, request):
         user = super(BasicSignupForm, self).save(request)
@@ -49,9 +50,6 @@ class BasicLoginForm(LoginForm):
             return super(BasicLoginForm, self).login(*args, **kwargs)
         else:
             return redirect(f"/accounts/first_login/")
-
-
-
 
 
 

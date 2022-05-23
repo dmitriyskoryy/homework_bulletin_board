@@ -16,9 +16,9 @@ from django.contrib.auth.models import User
 
 from bulletin_board.utils import send_message_on_email
 
-logger.debug("Hello, debug")
-logger.info("Hello, info")
-logger.error("Hello, error")
+# logger.debug("Hello, debug")
+# logger.info("Hello, info")
+# logger.error("Hello, error")
 
 # logger.add("error.log", format="{time} {level} {message}", level="ERROR")
 
@@ -29,11 +29,11 @@ class AdtList(generic.ListView):
     ordering = ['-id']
     paginate_by = 5
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         context['is_not_group_authors'] = not user.groups.filter(name='Authors').exists()
+        context['is_onetime_code'] = OneTimeCode.objects.filter(codeUser__username=user).exists()
         return context
 
 

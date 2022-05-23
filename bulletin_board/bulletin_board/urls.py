@@ -19,12 +19,23 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+'''чтобы заработало добавление картинок импортируем, т.к. до этого дребовало ввести пароль админа'''
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from ckeditor_uploader import views as ckeditor_views
+'''===================================================================================='''
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ads/', include('ads.urls')),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+
+    #убрал path('ckeditor/', include('ckeditor_uploader.urls')), добавил два пути ниже.
+    #Заработало добавление картинок, т.к. до этого дребовало ввести пароль админа
+    path('ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    path('ckeditor/browse/', never_cache(login_required(ckeditor_views.browse)), name='ckeditor_browse'),
 ]
 
 if settings.DEBUG:
