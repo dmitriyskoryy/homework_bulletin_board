@@ -5,7 +5,6 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
-    ratingAuthor = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return f'{self.authorUser.username}'
@@ -24,8 +23,6 @@ class Adt(models.Model):
     dateCreation = models.DateTimeField(auto_now_add=True, verbose_name='Date')
     title = models.CharField(max_length=128, verbose_name='Заголовок объявления')
     text = RichTextUploadingField(blank=True, verbose_name='Контент')
-    # photo = models.ImageField(upload_to='photo/%Y/%m/%d/',  verbose_name='Фото')
-    rating = models.SmallIntegerField(default=0)
 
     #добав ссылку на текущий объект. Для того, чтобы при создании объекта или переходе
     #к его деталям не прописывать в каждом дженерике succes_url.
