@@ -24,5 +24,4 @@ def user_signed_up_first_login(request, user, **kwargs):
     message = f"Ваш код для подтверждения аккаунта:"
     subject = f'Здравствуйте, {user}! Вы зарегистировались на сайте MMORPG.'
     template = 'mail_send_code.html'
-    # send_message_on_email(message, subject, template, email, code)
     send_message_on_email(message, subject, template, email, code=code)

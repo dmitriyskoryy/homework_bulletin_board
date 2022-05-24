@@ -10,17 +10,11 @@ from loguru import logger
 from .models import *
 from .forms import FormCreateAdt
 
-
 from django.contrib.auth.models import User
-
 
 from bulletin_board.utils import send_message_on_email
 
-# logger.debug("Hello, debug")
-# logger.info("Hello, info")
-# logger.error("Hello, error")
 
-# logger.add("error.log", format="{time} {level} {message}", level="ERROR")
 
 class AdtList(generic.ListView):
     model = Adt
@@ -38,15 +32,13 @@ class AdtList(generic.ListView):
 
 
 
-
 class AdtDetailView(generic.DetailView):
     template_name = 'adt_detail.html'
     context_object_name = 'adt'
     queryset = Adt.objects.all()
-
     success_url = '/ads/<int:pk>'
 
-    # добавить как-то чтобы после входа автоматов перенаправляло на туже страницу
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,7 +59,6 @@ class AdtDetailView(generic.DetailView):
                                             author=Author.objects.get(authorUser=user))
         except:
             context['is_author_adt'] = None
-
         return context
 
 
@@ -93,11 +84,9 @@ class AdtUpdateView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateV
     form_class = FormCreateAdt
     permission_required = ('ads.change_adt',)
 
-    # метод get_object  исп вместо queryset, чтобы получить информацию об объекте который нужно редактировать
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Adt.objects.get(pk=id)
-
 
 
 
@@ -106,7 +95,6 @@ class AdtDeleteView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteV
     queryset = Adt.objects.all()
     permission_required = ('ads.delete_adt',)
     success_url = '/ads/'
-
 
 
 
@@ -141,8 +129,7 @@ class Personal_Area(LoginRequiredMixin, generic.ListView):
 def delete_response(resp_id):
     """Функция удаления отклика через личный кабинет"""
     try:
-        # response = Respond.objects.get(id=resp_id)
-        response = Respond.objects.get(id=342234234)
+        response = Respond.objects.get(id=resp_id)
         if response:
             response.delete()
     except ObjectDoesNotExist as e:
@@ -154,7 +141,6 @@ def accept_response(resp_id):
     """Функция принятия отклика в личном кабинете"""
     try:
         response = Respond.objects.get(id=resp_id)
-
         if response:
             response.acceptResponse = True
             response.save()
